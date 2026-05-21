@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CyberSecurityAwarenessBot.Models
 {
-    class UserMemory
+    public class UserMemory
     {
     }
 }
