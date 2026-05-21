@@ -1,12 +1,121 @@
 ﻿<Window x:Class="CyberSecurityAwarenessBot.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CyberSecurityAwarenessBot"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="CyberSecurity Awareness Bot"
+        Height="650" Width="850"
+        MinHeight="500" MinWidth="600"
+        Background="#1E1E2E"
+        WindowStartupLocation="CenterScreen">
 
+    <Window.Resources>
+        <!-- Colours -->
+        <SolidColorBrush x:Key="BotBubble"    Color="#2A2A3E"/>
+        <SolidColorBrush x:Key="UserBubble"   Color="#3A3A5C"/>
+        <SolidColorBrush x:Key="AccentGreen"  Color="#00FF9C"/>
+        <SolidColorBrush x:Key="TextPrimary"  Color="#E0E0E0"/>
+        <SolidColorBrush x:Key="TextMuted"    Color="#888899"/>
+        <SolidColorBrush x:Key="InputBg"      Color="#2A2A3E"/>
+        <SolidColorBrush x:Key="BorderColour" Color="#3A3A5C"/>
+
+        <!-- Input TextBox style -->
+        <Style x:Key="InputStyle" TargetType="TextBox">
+            <Setter Property="Background"   Value="{StaticResource InputBg}"/>
+            <Setter Property="Foreground"   Value="{StaticResource TextPrimary}"/>
+            <Setter Property="BorderBrush"  Value="{StaticResource BorderColour}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize"     Value="14"/>
+            <Setter Property="Padding"      Value="12,10"/>
+            <Setter Property="CaretBrush"   Value="{StaticResource AccentGreen}"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Send Button style -->
+        <Style x:Key="SendButtonStyle" TargetType="Button">
+            <Setter Property="Background"  Value="{StaticResource AccentGreen}"/>
+            <Setter Property="Foreground"  Value="#1E1E2E"/>
+            <Setter Property="FontWeight"  Value="Bold"/>
+            <Setter Property="FontSize"    Value="14"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding"     Value="20,10"/>
+            <Setter Property="Cursor"      Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#00CC7A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Header -->
+            <RowDefinition Height="*"/>
+            <!-- Chat area -->
+            <RowDefinition Height="Auto"/>
+            <!-- Input bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ═══ HEADER ═══ -->
+        <Border Grid.Row="0"
+                Background="#16213E"
+                BorderBrush="{StaticResource BorderColour}"
+                BorderThickness="0,0,0,1"
+                Padding="20,14">
+            <StackPanel>
+                <!-- ASCII Art -->
+                <TextBlock FontFamily="Courier New"
+                           FontSize="11"
+                           Foreground="{StaticResource AccentGreen}"
+                           Text=" ██████╗██╗   ██╗██████╗ ███████╗██████╗     ██████╗  ██████╗ ████████╗
+                           &#x0a;██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗    ██╔══██╗██╔═══██╗╚══██╔══╝
+                           &#x0a;██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝    ██████╔╝██║   ██║   ██║   
+                           &#x0a;██║       ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗    ██╔══██╗██║   ██║   ██║   
+                           &#x0a;╚██████╗   ██║   ██████╔╝███████╗██║  ██║    ██████╔╝╚██████╔╝   ██║   
+                           &#x0a; ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝    ╚═════╝  ╚═════╝    ╚═╝   "/>
+                <!-- Subtitle -->
+                <TextBlock Text="Your personal cybersecurity assistant — stay safe online."
+                           Foreground="{StaticResource TextMuted}"
+                           FontSize="12"
+                           Margin="4,4,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ═══ CHAT DISPLAY ═══ -->
+        <ScrollViewer Grid.Row="1"
+                      x:Name="ChatScrollViewer"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Padding="16,12">
+            <StackPanel x:Name="ChatPanel"
+                        VerticalAlignment="Bottom"/>
+        </ScrollViewer>
+
+        <!-- ═══ INPUT BAR ═══ -->
+        <Border Grid.Row="2"
+                Background="#16213E"
+                BorderBrush="{StaticResource BorderColour}"
+                BorderThickness="0,1,0,0"
+                Padding="16,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0"
+                         x:Name="UserInputBox"
+                         Style="{StaticResource InputStyle}"
+                         ToolTip="Type your message here..."
+                         KeyDown="UserInputBox_KeyDown"
+                         Margin="0,0,10,0"/>
+
+                <Button Grid.Column="1"
+                        x:Name="SendButton"
+                        Content="Send"
+                        Style="{StaticResource SendButtonStyle}"
+                        Click="SendButton_Click"/>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

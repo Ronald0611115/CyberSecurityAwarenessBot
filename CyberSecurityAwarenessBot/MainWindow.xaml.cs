@@ -20,5 +20,15 @@ namespace CyberSecurityAwarenessBot
         {
             InitializeComponent();
         }
+
+        private void SendButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Wired up in Step 7
+        }
+
+        private void UserInputBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Pressing Enter will send — wired up in Step 7
+        }
     }
 }
