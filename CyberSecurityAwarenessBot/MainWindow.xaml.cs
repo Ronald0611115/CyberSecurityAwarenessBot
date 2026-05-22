@@ -11,10 +11,10 @@ using System.Windows.Navigation;
 
 namespace CyberSecurityAwarenessBot
 {
-    /// <summary>
+    
     /// UI code-behind — handles user interaction and connects to ChatEngine.
     /// Keeps all logic OUT of this file — only UI event handling lives here.
-    /// </summary>
+    
     public partial class MainWindow : Window
     {
         //   Engine  
