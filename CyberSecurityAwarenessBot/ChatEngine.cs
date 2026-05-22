@@ -14,12 +14,12 @@ namespace CyberSecurityAwarenessBot
     /// </summary>
     public class ChatEngine
     {
-        // ── Dependencies ──────────────────────────────────────────────────────
+        // Dependencies  
         private readonly ResponseManager _responseManager;
         private readonly SentimentDetector _sentimentDetector;
         private readonly UserMemory _memory;
 
-        // ── Delegate — used for conversation flow routing ─────────────────────
+        // Delegate — used for conversation flow routing 
         // Func takes the user input string and returns the bot response string
         private delegate string ConversationRouter(string input);
 
@@ -60,7 +60,7 @@ namespace CyberSecurityAwarenessBot
             return router(trimmed);
         }
 
-        // ── Conversation state handlers (delegate targets) ────────────────────
+        //  Conversation state handlers (delegate targets) 
 
         /// <summary>
         /// State: bot is waiting for the user to provide their name.
@@ -115,7 +115,7 @@ namespace CyberSecurityAwarenessBot
         {
             string lower = input.ToLower();
 
-            // ── Conversation flow: follow-up commands ─────────────────────────
+            // Conversation flow: follow-up commands 
             if (lower.Contains("tell me more") || lower.Contains("explain more") ||
                 lower.Contains("give me more") || lower.Contains("more info"))
             {
@@ -128,20 +128,20 @@ namespace CyberSecurityAwarenessBot
                 return _responseManager.GetRandomTip();
             }
 
-            // ── Memory recall ─────────────────────────────────────────────────
+            // Memory recall
             if (lower.Contains("what do you remember") || lower.Contains("what do you know about me"))
             {
                 return HandleMemoryRecall();
             }
 
-            // ── Topic list ────────────────────────────────────────────────────
+            // Topic list 
             if (lower.Contains("what can i ask") || lower.Contains("help") ||
                 lower.Contains("topics") || lower.Contains("what can you do"))
             {
                 return _responseManager.GetTopicList();
             }
 
-            // ── Basic conversational responses ────────────────────────────────
+            // Basic conversational responses
             if (lower.Contains("how are you") || lower.Contains("how r u"))
             {
                 return $"I'm running smoothly and ready to help, {GetNameOrFallback()}! " +
@@ -156,7 +156,7 @@ namespace CyberSecurityAwarenessBot
                        "privacy, malware, Wi-Fi safety, or two-factor authentication.";
             }
 
-            // ── Sentiment detection — runs before keyword matching ────────────
+            // Sentiment detection — runs before keyword matching
             string sentimentResponse = _sentimentDetector.Analyse(input);
             if (sentimentResponse != null)
             {
@@ -170,7 +170,7 @@ namespace CyberSecurityAwarenessBot
                 return sentimentResponse;
             }
 
-            // ── Keyword recognition — main response engine ────────────────────
+            // Keyword recognition — main response engine 
             string response = _responseManager.GetKeywordResponse(input);
             if (response != null)
             {
@@ -179,13 +179,13 @@ namespace CyberSecurityAwarenessBot
                        $"{GetNameOrFallback()}? Just say 'tell me more'.";
             }
 
-            // ── Default fallback — input validation ───────────────────────────
+            // Default fallback — input validation
             return $"I'm not sure I understand that, {GetNameOrFallback()}. " +
                    $"Could you rephrase? You can also ask me 'what can I ask?' " +
                    $"to see all available topics.";
         }
 
-        // ── Helper methods ────────────────────────────────────────────────────
+        // Helper methods
 
         /// <summary>
         /// Handles follow-up requests by expanding on the last topic discussed.

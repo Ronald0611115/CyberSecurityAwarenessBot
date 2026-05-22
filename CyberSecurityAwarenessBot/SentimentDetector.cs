@@ -84,7 +84,7 @@ namespace CyberSecurityAwarenessBot
             return null;
         }
 
-        // ── Delegate handler methods ──────────────────────────────────────────
+        // Delegate handler methods 
 
         private string HandleWorried(string input)
         {
