@@ -4,10 +4,10 @@ using System.Text;
 
 namespace CyberSecurityAwarenessBot
 {
-    /// <summary>
+  
     /// Detects sentiment in user input and returns empathetic responses.
     /// Demonstrates delegates: Func and Action used for response routing.
-    /// </summary>
+    
     public class SentimentDetector
     {
         // DELEGATE — Func takes a string (input) and returns a string (response)
@@ -60,10 +60,10 @@ namespace CyberSecurityAwarenessBot
             };
         }
 
-        /// <summary>
+
         /// Analyses the input, detects sentiment, and invokes the correct delegate handler.
         /// Returns null if no sentiment is detected.
-        /// </summary>
+         
         public string Analyse(string userInput)
         {
             string input = userInput.ToLower();

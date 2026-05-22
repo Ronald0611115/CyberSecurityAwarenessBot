@@ -34,9 +34,9 @@ namespace CyberSecurityAwarenessBot
             Loaded += MainWindow_Loaded;
         }
 
-        /// <summary>
+         
         /// Fires when the window first loads — plays voice greeting and shows welcome message.
-        /// </summary>
+        
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             PlayVoiceGreeting();
@@ -59,9 +59,9 @@ namespace CyberSecurityAwarenessBot
 
         //   Core send logic  
 
-        /// <summary>
+         
         /// Reads input, shows user bubble, gets bot response, shows bot bubble.
-        /// </summary>
+         
         private void SendMessage()
         {
             string userInput = UserInputBox.Text;
@@ -86,9 +86,9 @@ namespace CyberSecurityAwarenessBot
 
         //   Chat bubble builders  
 
-        /// <summary>
+         
         /// Adds a bot message bubble to the chat panel.
-        /// </summary>
+        
         private void ShowBotMessage(string message)
         {
             var container = new StackPanel { Margin = new Thickness(0, 6, 0, 6) };
@@ -127,9 +127,9 @@ namespace CyberSecurityAwarenessBot
             ChatPanel.Children.Add(container);
         }
 
-        /// <summary>
+        
         /// Adds a user message bubble to the chat panel.
-        /// </summary>
+         
         private void ShowUserMessage(string message)
         {
             var container = new StackPanel
@@ -175,10 +175,10 @@ namespace CyberSecurityAwarenessBot
 
         //   Voice greeting  
 
-        /// <summary>
+         
         /// Plays the WAV voice greeting if the file exists.
         /// Carried forward from Part 1 requirement.
-        /// </summary>
+         
         private void PlayVoiceGreeting()
         {
             try

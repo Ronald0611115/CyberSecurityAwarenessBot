@@ -7,11 +7,10 @@ using System.Linq;
 
 namespace CyberSecurityAwarenessBot
 {
-    /// <summary>
-    /// Orchestrates the chatbot conversation.
+     
     /// Connects ResponseManager, SentimentDetector, and UserMemory.
     /// Demonstrates: OOP, delegates, string manipulation, conversation flow, memory recall.
-    /// </summary>
+     
     public class ChatEngine
     {
         // Dependencies  
@@ -36,10 +35,10 @@ namespace CyberSecurityAwarenessBot
             _memory = new UserMemory();
         }
 
-        /// <summary>
+        
         /// Main entry point — receives raw user input, returns bot response.
         /// Routes through the correct conversation state using a delegate.
-        /// </summary>
+        
         public string ProcessInput(string userInput)
         {
             // Input validation — handle empty or whitespace input
@@ -62,9 +61,9 @@ namespace CyberSecurityAwarenessBot
 
         //  Conversation state handlers (delegate targets) 
 
-        /// <summary>
+         
         /// State: bot is waiting for the user to provide their name.
-        /// </summary>
+        
         private string HandleAwaitingName(string input)
         {
             // Extract name using string manipulation
@@ -86,9 +85,9 @@ namespace CyberSecurityAwarenessBot
                    $"(e.g. passwords, phishing, privacy, scams, malware, Wi-Fi, 2FA)";
         }
 
-        /// <summary>
+         
         /// State: bot is waiting for the user's favourite topic.
-        /// </summary>
+         
         private string HandleAwaitingTopic(string input)
         {
             _memory.FavouriteTopic = input.Trim();
@@ -108,9 +107,9 @@ namespace CyberSecurityAwarenessBot
                    $"Ask me anything about cybersecurity, {_memory.UserName}!";
         }
 
-        /// <summary>
+        
         /// State: general conversation — handles all normal chat.
-        /// </summary>
+        
         private string HandleGeneralChat(string input)
         {
             string lower = input.ToLower();
@@ -187,9 +186,9 @@ namespace CyberSecurityAwarenessBot
 
         // Helper methods
 
-        /// <summary>
+         
         /// Handles follow-up requests by expanding on the last topic discussed.
-        /// </summary>
+         
         private string HandleFollowUp()
         {
             if (string.IsNullOrWhiteSpace(_lastTopic))
@@ -201,9 +200,9 @@ namespace CyberSecurityAwarenessBot
                 : "I don't have more details on that specific topic. Try asking about something else!";
         }
 
-        /// <summary>
+         
         /// Returns stored user memory in a conversational way — memory recall requirement.
-        /// </summary>
+         
         private string HandleMemoryRecall()
         {
             if (!_memory.KnowsName)
@@ -221,10 +220,10 @@ namespace CyberSecurityAwarenessBot
             return recall;
         }
 
-        /// <summary>
+         
         /// Extracts a clean name from input like "I'm Rorisang" or "my name is Rorisang" or just "Rorisang".
         /// Uses string manipulation — ToLower, Replace, Trim, Split.
-        /// </summary>
+         
         private string ExtractName(string input)
         {
             string cleaned = input.ToLower()
@@ -239,17 +238,17 @@ namespace CyberSecurityAwarenessBot
             return char.ToUpper(cleaned[0]) + cleaned.Substring(1);
         }
 
-        /// <summary>
+         
         /// Returns the user's name if known, otherwise a friendly fallback.
-        /// </summary>
+         
         private string GetNameOrFallback()
         {
             return _memory.KnowsName ? _memory.UserName : "there";
         }
 
-        /// <summary>
+         
         /// Returns the opening message when the bot first launches.
-        /// </summary>
+         
         public string GetWelcomeMessage()
         {
             return "Welcome to the Cybersecurity Awareness Bot!\n\n" +
