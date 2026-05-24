@@ -79,8 +79,8 @@ namespace CyberSecurityAwarenessBot
             // Move conversation forward
             _conversationState = "awaitingTopic";
 
-            return $"Great to meet you, {_memory.UserName}! \n\n" +
-                   $"I'm your Cybersecurity Awareness Bot — I'm here to help you stay safe online.\n\n" +
+            return $"Great to meet you, {_memory.UserName}! \n" +
+                   $"I'm your Cybersecurity Awareness Bot.\n" +
                    $"What cybersecurity topic are you most interested in? " +
                    $"(e.g. passwords, phishing, privacy, scams, malware, Wi-Fi, 2FA)";
         }
@@ -98,9 +98,9 @@ namespace CyberSecurityAwarenessBot
             if (response != null)
             {
                 _lastTopic = input;
-                return $"Great choice! I'll remember that you're interested in {_memory.FavouriteTopic}.\n\n" +
+                return $"Great choice! {_memory.FavouriteTopic}.\n\n" +
                        $"Here's something useful to start with:\n\n{response}\n\n" +
-                       $"Feel free to ask me anything else, {_memory.UserName}!";
+                       $" {_memory.UserName}, to get more information type tell me more/ more info/ explain more/ {_memory.FavouriteTopic} again or ask about something else!";
             }
 
             return $"Got it — I'll remember that you're interested in {_memory.FavouriteTopic}. " +
@@ -150,7 +150,7 @@ namespace CyberSecurityAwarenessBot
             if (lower.Contains("your purpose") || lower.Contains("what are you") ||
                 lower.Contains("who are you"))
             {
-                return "I'm the Cybersecurity Awareness Bot — designed to help you understand " +
+                return "I'm Blake!, A Cybersecurity Awareness Bot — designed by Rorisang Ronald Maroga to help you understand " +
                        "online threats and stay safe. Ask me about passwords, phishing, scams, " +
                        "privacy, malware, Wi-Fi safety, or two-factor authentication.";
             }
