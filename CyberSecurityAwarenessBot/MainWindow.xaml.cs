@@ -59,36 +59,42 @@ namespace CyberSecurityAwarenessBot
 
         //   Core send logic  
 
-         
+
         /// Reads input, shows user bubble, gets bot response, shows bot bubble.
-         
+
         private void SendMessage()
         {
             string userInput = UserInputBox.Text;
 
-            // Show user bubble even if empty — engine handles validation response
             if (!string.IsNullOrWhiteSpace(userInput))
                 ShowUserMessage(userInput);
 
-            // Get response from engine
-            string response = _chatEngine.ProcessInput(userInput);
+            // Check for exit command before processing
+            if (_chatEngine.IsExitCommand(userInput))
+            {
+                ShowBotMessage(_chatEngine.GetFarewellMessage());
+                UserInputBox.Clear();
 
-            // Show bot response
+                // Disable input so user knows chat has ended
+                UserInputBox.IsEnabled = false;
+                SendButton.IsEnabled = false;
+                UserInputBox.Text = "Chat ended. Close the window to exit.";
+                return;
+            }
+
+            string response = _chatEngine.ProcessInput(userInput);
             ShowBotMessage(response);
 
-            // Clear input
             UserInputBox.Clear();
             UserInputBox.Focus();
-
-            // Scroll to bottom
             ChatScrollViewer.ScrollToBottom();
         }
 
         //   Chat bubble builders  
 
-         
+
         /// Adds a bot message bubble to the chat panel.
-        
+
         private void ShowBotMessage(string message)
         {
             var container = new StackPanel { Margin = new Thickness(0, 6, 0, 6) };

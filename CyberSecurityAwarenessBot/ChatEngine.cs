@@ -247,13 +247,31 @@ namespace CyberSecurityAwarenessBot
         }
 
          
-        /// Returns the opening message when the bot first launches.
-         
+        /// Returns the opening message when the bot first launches
         public string GetWelcomeMessage()
         {
             return "Welcome to the Cybersecurity Awareness Bot!\n\n" +
                    "I'm here to help you stay safe online.\n\n" +
                    "Before we start — what's your name?";
+        }
+
+        /// Checks if the user wants to end the conversation.
+
+        public bool IsExitCommand(string input)
+        {
+            string lower = input.ToLower().Trim();
+            return lower == "exit" || lower == "quit" || lower == "bye" ||
+                   lower == "goodbye" || lower == "end" || lower == "close";
+        }
+
+        /// Returns a farewell message using the user's name if known.
+
+        public string GetFarewellMessage()
+        {
+            string name = _memory.KnowsName ? $", {_memory.UserName}" : "";
+            return $"Stay safe online{name}!\n\n" +
+                   $"Remember — strong passwords, updated software, and healthy scepticism " +
+                   $"are your best defences. Goodbye!";
         }
     }
 }
