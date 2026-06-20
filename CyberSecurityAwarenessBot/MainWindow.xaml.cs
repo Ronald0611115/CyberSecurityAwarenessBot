@@ -8,6 +8,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using CyberSecurityAwarenessBot.Services;
+using CyberSecurityAwarenessBot.Models;
 
 namespace CyberSecurityAwarenessBot
 {
@@ -26,28 +28,178 @@ namespace CyberSecurityAwarenessBot
         private readonly SolidColorBrush _botTextColour = new SolidColorBrush(Color.FromRgb(0, 255, 156));
         private readonly SolidColorBrush _userTextColour = new SolidColorBrush(Color.FromRgb(224, 224, 224));
         private readonly SolidColorBrush _labelColour = new SolidColorBrush(Color.FromRgb(136, 136, 153));
+        private readonly DatabaseService _databaseService;
+        private readonly TaskManager _taskManager;
 
         public MainWindow()
         {
-        
+             
             InitializeComponent();
             _chatEngine = new ChatEngine();
+            _databaseService = new DatabaseService();
+            _taskManager = new TaskManager(_databaseService);
             Loaded += MainWindow_Loaded;
-
-            // TEMPORARY — remove after confirming DB connects
-            var dbTest = new CyberSecurityAwarenessBot.Services.DatabaseService();
-            bool connected = dbTest.TestConnection();
-            MessageBox.Show(connected ? "✅ Database connected!" : "❌ Database connection failed.");
+ 
         }
-        
 
-         
+
+
         /// Fires when the window first loads — plays voice greeting and shows welcome message.
-        
+
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             PlayVoiceGreeting();
             ShowBotMessage(_chatEngine.GetWelcomeMessage());
+            RefreshTaskList();
+        }
+
+        // Task Assistant 
+
+        private void AddTaskButton_Click(object sender, RoutedEventArgs e)
+        {
+            string title = TaskTitleBox.Text.Trim();
+            string description = TaskDescriptionBox.Text.Trim();
+            DateTime? reminder = TaskReminderPicker.SelectedDate;
+
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                MessageBox.Show("Please enter a task title.", "Missing Title",
+                                 MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            _taskManager.AddTask(title, description, reminder);
+
+            TaskTitleBox.Clear();
+            TaskDescriptionBox.Clear();
+            TaskReminderPicker.SelectedDate = null;
+
+            RefreshTaskList();
+        }
+
+        /// <summary>
+        /// Reloads all tasks from the database and rebuilds the task list UI.
+        /// </summary>
+        private void RefreshTaskList()
+        {
+            TaskListPanel.Items.Clear();
+
+            var tasks = _taskManager.GetAllTasks();
+
+            if (tasks.Count == 0)
+            {
+                TaskListPanel.Items.Add(new TextBlock
+                {
+                    Text = "No tasks yet — add one above to get started.",
+                    Foreground = _labelColour,
+                    FontStyle = FontStyles.Italic,
+                    Margin = new Thickness(4, 10, 0, 0)
+                });
+                return;
+            }
+
+            foreach (var task in tasks)
+                TaskListPanel.Items.Add(BuildTaskCard(task));
+        }
+
+        /// <summary>
+        /// Builds a visual card for a single task, with complete and delete buttons.
+        /// </summary>
+        private Border BuildTaskCard(TaskItem task)
+        {
+            var card = new Border
+            {
+                Background = task.IsCompleted
+                    ? new SolidColorBrush(Color.FromRgb(30, 50, 40))
+                    : _botBubbleColour,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(58, 58, 92)),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(6),
+                Padding = new Thickness(14, 10, 14, 10),
+                Margin = new Thickness(0, 0, 0, 10)
+            };
+
+            var grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+            var textPanel = new StackPanel();
+
+            var titleText = new TextBlock
+            {
+                Text = task.Title,
+                FontWeight = FontWeights.Bold,
+                FontSize = 14,
+                Foreground = task.IsCompleted ? _labelColour : _botTextColour,
+                TextDecorations = task.IsCompleted ? TextDecorations.Strikethrough : null
+            };
+            textPanel.Children.Add(titleText);
+
+            if (!string.IsNullOrWhiteSpace(task.Description))
+            {
+                textPanel.Children.Add(new TextBlock
+                {
+                    Text = task.Description,
+                    FontSize = 12,
+                    Foreground = _userTextColour,
+                    TextWrapping = TextWrapping.Wrap,
+                    Margin = new Thickness(0, 4, 0, 0)
+                });
+            }
+
+            textPanel.Children.Add(new TextBlock
+            {
+                Text = task.ReminderDisplay,
+                FontSize = 11,
+                Foreground = _labelColour,
+                Margin = new Thickness(0, 4, 0, 0)
+            });
+
+            Grid.SetColumn(textPanel, 0);
+            grid.Children.Add(textPanel);
+
+            var completeButton = new Button
+            {
+                Content = task.IsCompleted ? "Done" : "Mark Complete",
+                Margin = new Thickness(8, 0, 0, 0),
+                Padding = new Thickness(10, 6, 10, 6),
+                FontSize = 11,
+                IsEnabled = !task.IsCompleted,
+                Background = new SolidColorBrush(Color.FromRgb(0, 255, 156)),
+                Foreground = new SolidColorBrush(Color.FromRgb(30, 30, 46)),
+                BorderThickness = new Thickness(0),
+                Cursor = Cursors.Hand
+            };
+            completeButton.Click += (s, e) =>
+            {
+                _taskManager.CompleteTask(task.Id);
+                RefreshTaskList();
+            };
+            Grid.SetColumn(completeButton, 1);
+            grid.Children.Add(completeButton);
+
+            var deleteButton = new Button
+            {
+                Content = "Delete",
+                Margin = new Thickness(8, 0, 0, 0),
+                Padding = new Thickness(10, 6, 10, 6),
+                FontSize = 11,
+                Background = new SolidColorBrush(Color.FromRgb(200, 60, 60)),
+                Foreground = Brushes.White,
+                BorderThickness = new Thickness(0),
+                Cursor = Cursors.Hand
+            };
+            deleteButton.Click += (s, e) =>
+            {
+                _taskManager.DeleteTask(task.Id);
+                RefreshTaskList();
+            };
+            Grid.SetColumn(deleteButton, 2);
+            grid.Children.Add(deleteButton);
+
+            card.Child = grid;
+            return card;
         }
 
         // Event handlers  

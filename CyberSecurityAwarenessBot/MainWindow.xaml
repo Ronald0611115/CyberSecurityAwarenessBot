@@ -144,12 +144,61 @@
 
         <!-- TAB 2: TASKS — built in Step 3 -->
         <TabItem Header="Tasks">
-            <Grid Background="#1E1E2E" x:Name="TasksTabRoot">
-                <TextBlock Text="Task Assistant — coming in Step 3"
-                           Foreground="{StaticResource TextMuted}"
-                           FontSize="14"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
+            <Grid Background="#1E1E2E" Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0"
+                   Text="Task Assistant"
+                   FontSize="20" FontWeight="Bold"
+                   Foreground="{StaticResource AccentGreen}"
+                   Margin="0,0,0,16"/>
+
+                <!-- Add Task Form -->
+                <Border Grid.Row="1"
+                Background="#16213E"
+                BorderBrush="{StaticResource BorderColour}"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="16"
+                Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="Task Title" Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,4"/>
+                        <TextBox x:Name="TaskTitleBox" Style="{StaticResource InputStyle}" Margin="0,0,0,10"/>
+
+                        <TextBlock Text="Description" Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,4"/>
+                        <TextBox x:Name="TaskDescriptionBox"
+                         Style="{StaticResource InputStyle}"
+                         Height="60" TextWrapping="Wrap" AcceptsReturn="True"
+                         Margin="0,0,0,10"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Reminder Date (optional)" Foreground="{StaticResource TextMuted}" FontSize="12" Margin="0,0,0,4"/>
+                                <DatePicker x:Name="TaskReminderPicker" Width="200" HorizontalAlignment="Left"/>
+                            </StackPanel>
+
+                            <Button Grid.Column="1"
+                            Content="Add Task"
+                            Style="{StaticResource ActionButtonStyle}"
+                            VerticalAlignment="Bottom"
+                            Click="AddTaskButton_Click"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Task List -->
+                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl x:Name="TaskListPanel"/>
+                </ScrollViewer>
             </Grid>
         </TabItem>
 
