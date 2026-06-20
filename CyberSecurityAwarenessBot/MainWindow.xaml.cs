@@ -29,10 +29,17 @@ namespace CyberSecurityAwarenessBot
 
         public MainWindow()
         {
+        
             InitializeComponent();
             _chatEngine = new ChatEngine();
             Loaded += MainWindow_Loaded;
+
+            // TEMPORARY — remove after confirming DB connects
+            var dbTest = new CyberSecurityAwarenessBot.Services.DatabaseService();
+            bool connected = dbTest.TestConnection();
+            MessageBox.Show(connected ? "✅ Database connected!" : "❌ Database connection failed.");
         }
+        
 
          
         /// Fires when the window first loads — plays voice greeting and shows welcome message.
