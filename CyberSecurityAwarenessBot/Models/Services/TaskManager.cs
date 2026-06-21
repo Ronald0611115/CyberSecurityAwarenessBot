@@ -10,10 +10,10 @@ using CyberSecurityAwarenessBot.Models;
 
 namespace CyberSecurityAwarenessBot.Services
     {
-        /// <summary>
+        
         /// Business logic layer for managing cybersecurity tasks.
         /// Sits between the UI and DatabaseService — never touches SQL directly.
-        /// </summary>
+        
         public class TaskManager
         {
             private readonly DatabaseService _db;
@@ -23,9 +23,9 @@ namespace CyberSecurityAwarenessBot.Services
                 _db = db;
             }
 
-            /// <summary>
+            
             /// Creates and saves a new task to the database.
-            /// </summary>
+            
             public TaskItem AddTask(string title, string description, DateTime? reminderDate)
             {
                 var task = new TaskItem
@@ -49,10 +49,10 @@ namespace CyberSecurityAwarenessBot.Services
 
             public void DeleteTask(int taskId) => _db.DeleteTask(taskId);
 
-            /// <summary>
+            
             /// Parses natural language reminder phrases like "in 3 days" or "tomorrow"
             /// into an actual DateTime. Used later by the NLP simulation in Step 5.
-            /// </summary>
+            
             public DateTime? ParseReminderPhrase(string phrase)
             {
                 if (string.IsNullOrWhiteSpace(phrase)) return null;

@@ -30,27 +30,191 @@ namespace CyberSecurityAwarenessBot
         private readonly SolidColorBrush _labelColour = new SolidColorBrush(Color.FromRgb(136, 136, 153));
         private readonly DatabaseService _databaseService;
         private readonly TaskManager _taskManager;
+        private readonly QuizManager _quizManager;
 
         public MainWindow()
         {
-             
+        
             InitializeComponent();
             _chatEngine = new ChatEngine();
             _databaseService = new DatabaseService();
             _taskManager = new TaskManager(_databaseService);
+            _quizManager = new QuizManager();
             Loaded += MainWindow_Loaded;
- 
+        
         }
 
 
 
         /// Fires when the window first loads — plays voice greeting and shows welcome message.
-
+        
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             PlayVoiceGreeting();
             ShowBotMessage(_chatEngine.GetWelcomeMessage());
             RefreshTaskList();
+            ShowQuizStartScreen();
+        }
+
+        // Quiz
+
+        private void ShowQuizStartScreen()
+        {
+            QuizContentPanel.Children.Clear();
+
+            QuizContentPanel.Children.Add(new TextBlock
+            {
+                Text = "Test your cybersecurity knowledge with 12 questions covering " +
+                       "passwords, phishing, safe browsing, and social engineering.",
+                Foreground = _userTextColour,
+                FontSize = 13,
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 0, 0, 16)
+            });
+
+            var startButton = new Button
+            {
+                Content = "Start Quiz",
+                Style = (Style)FindResource("ActionButtonStyle"),
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
+            startButton.Click += (s, e) =>
+            {
+                _quizManager.StartNewQuiz();
+                ShowQuizQuestion();
+            };
+
+            QuizContentPanel.Children.Add(startButton);
+        }
+
+        private void ShowQuizQuestion()
+        {
+            QuizContentPanel.Children.Clear();
+
+            var question = _quizManager.GetCurrentQuestion();
+            if (question == null)
+            {
+                ShowQuizResults();
+                return;
+            }
+
+            QuizContentPanel.Children.Add(new TextBlock
+            {
+                Text = $"Question {_quizManager.CurrentQuestionNumber} of {_quizManager.TotalQuestions}",
+                Foreground = _labelColour,
+                FontSize = 12,
+                Margin = new Thickness(0, 0, 0, 8)
+            });
+
+            QuizContentPanel.Children.Add(new TextBlock
+            {
+                Text = question.QuestionText,
+                Foreground = _botTextColour,
+                FontSize = 15,
+                FontWeight = FontWeights.Bold,
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 0, 0, 16)
+            });
+
+            for (int i = 0; i < question.Options.Count; i++)
+            {
+                int optionIndex = i; // capture for the lambda
+
+                var optionButton = new Button
+                {
+                    Content = $"{(char)('A' + i)})  {question.Options[i]}",
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    HorizontalContentAlignment = HorizontalAlignment.Left,
+                    Background = _botBubbleColour,
+                    Foreground = _userTextColour,
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(58, 58, 92)),
+                    BorderThickness = new Thickness(1),
+                    Padding = new Thickness(12, 10, 12, 10),
+                    Margin = new Thickness(0, 0, 0, 8),
+                    Cursor = Cursors.Hand
+                };
+
+                optionButton.Click += (s, e) => HandleQuizAnswer(optionIndex, question);
+                QuizContentPanel.Children.Add(optionButton);
+            }
+        }
+
+        private void HandleQuizAnswer(int selectedIndex, QuizQuestion question)
+        {
+            bool wasCorrect = _quizManager.SubmitAnswer(selectedIndex);
+
+            QuizContentPanel.Children.Clear();
+
+            QuizContentPanel.Children.Add(new TextBlock
+            {
+                Text = wasCorrect ? "Correct!" : " Not quite.",
+                Foreground = wasCorrect ? _botTextColour : new SolidColorBrush(Color.FromRgb(255, 100, 100)),
+                FontSize = 16,
+                FontWeight = FontWeights.Bold,
+                Margin = new Thickness(0, 0, 0, 10)
+            });
+
+            QuizContentPanel.Children.Add(new TextBlock
+            {
+                Text = question.Explanation,
+                Foreground = _userTextColour,
+                FontSize = 13,
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 0, 0, 20)
+            });
+
+            var nextButton = new Button
+            {
+                Content = _quizManager.IsFinished ? "See Results" : "Next Question",
+                Style = (Style)FindResource("ActionButtonStyle"),
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
+            nextButton.Click += (s, e) =>
+            {
+                if (_quizManager.IsFinished)
+                    ShowQuizResults();
+                else
+                    ShowQuizQuestion();
+            };
+
+            QuizContentPanel.Children.Add(nextButton);
+        }
+
+        private void ShowQuizResults()
+        {
+            QuizContentPanel.Children.Clear();
+
+            QuizContentPanel.Children.Add(new TextBlock
+            {
+                Text = $"Final Score: {_quizManager.Score} / {_quizManager.TotalQuestions}",
+                Foreground = _botTextColour,
+                FontSize = 18,
+                FontWeight = FontWeights.Bold,
+                Margin = new Thickness(0, 0, 0, 10)
+            });
+
+            QuizContentPanel.Children.Add(new TextBlock
+            {
+                Text = _quizManager.GetFinalFeedback(),
+                Foreground = _userTextColour,
+                FontSize = 14,
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 0, 0, 20)
+            });
+
+            var retryButton = new Button
+            {
+                Content = "Try Again",
+                Style = (Style)FindResource("ActionButtonStyle"),
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
+            retryButton.Click += (s, e) =>
+            {
+                _quizManager.StartNewQuiz();
+                ShowQuizQuestion();
+            };
+
+            QuizContentPanel.Children.Add(retryButton);
         }
 
         // Task Assistant 
@@ -77,9 +241,9 @@ namespace CyberSecurityAwarenessBot
             RefreshTaskList();
         }
 
-        /// <summary>
+        
         /// Reloads all tasks from the database and rebuilds the task list UI.
-        /// </summary>
+
         private void RefreshTaskList()
         {
             TaskListPanel.Items.Clear();
@@ -102,9 +266,9 @@ namespace CyberSecurityAwarenessBot
                 TaskListPanel.Items.Add(BuildTaskCard(task));
         }
 
-        /// <summary>
+        
         /// Builds a visual card for a single task, with complete and delete buttons.
-        /// </summary>
+        
         private Border BuildTaskCard(TaskItem task)
         {
             var card = new Border

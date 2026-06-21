@@ -8,19 +8,19 @@ using CyberSecurityAwarenessBot.Models;
 
 namespace CyberSecurityAwarenessBot.Services
 {
-    /// <summary>
+    
     /// Handles all MySQL database operations for tasks.
     /// This is the ONLY class in the project that talks to the database directly.
-    /// </summary>
+    
     public class DatabaseService
     {
         // Default XAMPP MySQL credentials — no password by default
         private readonly string _connectionString =
             "Server=localhost;Database=cybersecuritybot;Uid=root;Pwd=;";
 
-        /// <summary>
+        
         /// Tests whether the database connection is working.
-        /// </summary>
+        
         public bool TestConnection()
         {
             try
@@ -36,9 +36,9 @@ namespace CyberSecurityAwarenessBot.Services
             }
         }
 
-        /// <summary>
+        
         /// Inserts a new task and returns its generated TaskId.
-        /// </summary>
+        
         public int InsertTask(TaskItem task)
         {
             try
@@ -65,9 +65,9 @@ namespace CyberSecurityAwarenessBot.Services
             }
         }
 
-        /// <summary>
+        
         /// Retrieves all tasks from the database, newest first.
-        /// </summary>
+        
         public List<TaskItem> GetAllTasks()
         {
             var tasks = new List<TaskItem>();
@@ -106,9 +106,9 @@ namespace CyberSecurityAwarenessBot.Services
             return tasks;
         }
 
-        /// <summary>
+        
         /// Marks a task as completed in the database.
-        /// </summary>
+        
         public void MarkTaskCompleted(int taskId)
         {
             try
@@ -127,9 +127,9 @@ namespace CyberSecurityAwarenessBot.Services
             }
         }
 
-        /// <summary>
+        
         /// Permanently deletes a task from the database.
-        /// </summary>
+        
         public void DeleteTask(int taskId)
         {
             try

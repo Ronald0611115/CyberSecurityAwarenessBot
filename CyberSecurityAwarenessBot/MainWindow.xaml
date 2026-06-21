@@ -204,12 +204,29 @@
 
         <!-- TAB 3: QUIZ — built in Step 4 -->
         <TabItem Header="Quiz">
-            <Grid Background="#1E1E2E" x:Name="QuizTabRoot">
-                <TextBlock Text="Cybersecurity Quiz — coming in Step 4"
-                           Foreground="{StaticResource TextMuted}"
-                           FontSize="14"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
+            <Grid Background="#1E1E2E" Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0"
+                   Text="Cybersecurity Quiz"
+                   FontSize="20" FontWeight="Bold"
+                   Foreground="{StaticResource AccentGreen}"
+                   Margin="0,0,0,16"/>
+
+                <Border Grid.Row="1"
+                Background="#16213E"
+                BorderBrush="{StaticResource BorderColour}"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="24"
+                VerticalAlignment="Top">
+                    <StackPanel x:Name="QuizContentPanel">
+                        <!-- Built dynamically in code-behind -->
+                    </StackPanel>
+                </Border>
             </Grid>
         </TabItem>
 

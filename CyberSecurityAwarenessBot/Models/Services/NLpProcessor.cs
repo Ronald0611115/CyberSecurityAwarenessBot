@@ -4,7 +4,8 @@ using System.Text;
 
 namespace CyberSecurityAwarenessBot.Models.Services
 {
-    internal class N1pProcessor
+    public class NLpProcessor
     {
+
     }
 }

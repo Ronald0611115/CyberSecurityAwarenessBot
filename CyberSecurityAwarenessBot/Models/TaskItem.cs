@@ -4,9 +4,9 @@ using System.Text;
 
 namespace CyberSecurityAwarenessBot.Models
 {
-        /// <summary>
+        
         /// Represents a single cybersecurity task stored in the database.
-        /// </summary>
+        
         public class TaskItem
         {
             public int Id { get; set; }
@@ -16,9 +16,9 @@ namespace CyberSecurityAwarenessBot.Models
             public bool IsCompleted { get; set; }
             public DateTime CreatedAt { get; set; }
 
-            /// <summary>
+            
             /// Friendly display text for the reminder, used in the UI.
-            /// </summary>
+            
             public string ReminderDisplay =>
                 ReminderDate.HasValue
                     ? $"Reminder: {ReminderDate.Value:dd MMM yyyy}"
