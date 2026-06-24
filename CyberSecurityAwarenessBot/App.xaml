@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:CyberSecurityAwarenessBot"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+         <!-- Theme / shared brushes -->
+        <SolidColorBrush x:Key="AccentGreen" Color="#00CC7A"/>
     </Application.Resources>
 </Application>

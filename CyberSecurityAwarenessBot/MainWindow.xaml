@@ -10,7 +10,7 @@
     <Window.Resources>
         <SolidColorBrush x:Key="BotBubble"    Color="#2A2A3E"/>
         <SolidColorBrush x:Key="UserBubble"   Color="#3A3A5C"/>
-        <SolidColorBrush x:Key="AccentGreen"  Color="#00FF9C"/>
+        <SolidColorBrush x:Key="Lavender"     Color="Lavender"/>
         <SolidColorBrush x:Key="TextPrimary"  Color="#E0E0E0"/>
         <SolidColorBrush x:Key="TextMuted"    Color="#888899"/>
         <SolidColorBrush x:Key="InputBg"      Color="#2A2A3E"/>
@@ -24,12 +24,12 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontSize"     Value="14"/>
             <Setter Property="Padding"      Value="12,10"/>
-            <Setter Property="CaretBrush"   Value="{StaticResource AccentGreen}"/>
+            <Setter Property="CaretBrush"   Value="{StaticResource Lavender}"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
         <Style x:Key="ActionButtonStyle" TargetType="Button">
-            <Setter Property="Background"  Value="{StaticResource AccentGreen}"/>
+            <Setter Property="Background"  Value="{StaticResource Lavender}"/>
             <Setter Property="Foreground"  Value="#1E1E2E"/>
             <Setter Property="FontWeight"  Value="Bold"/>
             <Setter Property="FontSize"    Value="14"/>
@@ -92,7 +92,7 @@
                     <StackPanel>
                         <TextBlock FontFamily="Courier New"
                                    FontSize="11"
-                                   Foreground="{StaticResource AccentGreen}"
+                                   Foreground="{StaticResource Lavender}"
                                    Text=" ██████╗██╗   ██╗██████╗ ███████╗██████╗     ██████╗  ██████╗ ████████╗
                                    &#x0a;██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗    ██╔══██╗██╔═══██╗╚══██╔══╝
                                    &#x0a;██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝    ██████╔╝██║   ██║   ██║   
@@ -232,12 +232,21 @@
 
         <!-- TAB 4: ACTIVITY LOG — built in Step 5/6 -->
         <TabItem Header="Activity Log">
-            <Grid Background="#1E1E2E" x:Name="LogTabRoot">
-                <TextBlock Text="Activity Log — coming soon"
-                           Foreground="{StaticResource TextMuted}"
-                           FontSize="14"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
+            <Grid Background="#1E1E2E" Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0"
+                           Text="Activity Log"
+                           FontSize="20" FontWeight="Bold"
+                           Foreground="{StaticResource AccentGreen}"
+                           Margin="0,0,0,16"/>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl x:Name="ActivityLogPanel"/>
+                </ScrollViewer>
             </Grid>
         </TabItem>
 

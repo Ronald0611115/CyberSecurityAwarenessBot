@@ -31,29 +31,34 @@ namespace CyberSecurityAwarenessBot
         private readonly DatabaseService _databaseService;
         private readonly TaskManager _taskManager;
         private readonly QuizManager _quizManager;
+        private readonly ActivityLogger _activityLogger;
+        private readonly NlpProcessor _nlpProcessor;
 
         public MainWindow()
         {
-        
             InitializeComponent();
             _chatEngine = new ChatEngine();
             _databaseService = new DatabaseService();
             _taskManager = new TaskManager(_databaseService);
             _quizManager = new QuizManager();
+            _activityLogger = new ActivityLogger();
+            _nlpProcessor = new NlpProcessor();
             Loaded += MainWindow_Loaded;
-        
         }
 
 
 
         /// Fires when the window first loads — plays voice greeting and shows welcome message.
-        
+
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             PlayVoiceGreeting();
             ShowBotMessage(_chatEngine.GetWelcomeMessage());
             RefreshTaskList();
             ShowQuizStartScreen();
+
+            _activityLogger.Log("Bot launched — voice greeting played");
+            RefreshActivityLog();
         }
 
         // Quiz
@@ -182,7 +187,11 @@ namespace CyberSecurityAwarenessBot
 
         private void ShowQuizResults()
         {
+            // Log the quiz completion
+            _activityLogger.Log($"Quiz completed — Score: {_quizManager.Score}/{_quizManager.TotalQuestions}");
+
             QuizContentPanel.Children.Clear();
+
 
             QuizContentPanel.Children.Add(new TextBlock
             {
@@ -228,20 +237,26 @@ namespace CyberSecurityAwarenessBot
             if (string.IsNullOrWhiteSpace(title))
             {
                 MessageBox.Show("Please enter a task title.", "Missing Title",
-                                 MessageBoxButton.OK, MessageBoxImage.Warning);
+                                MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             _taskManager.AddTask(title, description, reminder);
+
+            // Log the action
+            string reminderNote = reminder.HasValue
+                ? $" (Reminder: {reminder.Value:dd MMM yyyy})" : "";
+            _activityLogger.Log($"Task added: '{title}'{reminderNote}");
 
             TaskTitleBox.Clear();
             TaskDescriptionBox.Clear();
             TaskReminderPicker.SelectedDate = null;
 
             RefreshTaskList();
+            RefreshActivityLog();
         }
 
-        
+
         /// Reloads all tasks from the database and rebuilds the task list UI.
 
         private void RefreshTaskList()
@@ -392,25 +407,140 @@ namespace CyberSecurityAwarenessBot
             if (!string.IsNullOrWhiteSpace(userInput))
                 ShowUserMessage(userInput);
 
-            // Check for exit command before processing
+            // Exit command
             if (_chatEngine.IsExitCommand(userInput))
             {
                 ShowBotMessage(_chatEngine.GetFarewellMessage());
                 UserInputBox.Clear();
-
-                // Disable input so user knows chat has ended
                 UserInputBox.IsEnabled = false;
                 SendButton.IsEnabled = false;
                 UserInputBox.Text = "Chat ended. Close the window to exit.";
                 return;
             }
 
+            // NLP intercept — runs before ChatEngine 
+            string intent = _nlpProcessor.DetectIntent(userInput);
+            string nlpResponse = HandleNlpIntent(intent, userInput);
+
+            if (nlpResponse != null)
+            {
+                ShowBotMessage(nlpResponse);
+                UserInputBox.Clear();
+                UserInputBox.Focus();
+                ChatScrollViewer.ScrollToBottom();
+                RefreshActivityLog();
+                return;
+            }
+
+            // Fall through to ChatEngine for general conversation
             string response = _chatEngine.ProcessInput(userInput);
             ShowBotMessage(response);
 
             UserInputBox.Clear();
             UserInputBox.Focus();
             ChatScrollViewer.ScrollToBottom();
+            RefreshActivityLog();
+        }
+
+        // NLP Simulation 
+
+         
+        /// Handles intents detected by the NLP processor.
+        /// Returns a bot response string, or null to fall through to ChatEngine.
+        
+        private string HandleNlpIntent(string intent, string userInput)
+        {
+            switch (intent)
+            {
+                case "add_task":
+                    string taskTitle = _nlpProcessor.ExtractTaskTitle(userInput);
+                    _taskManager.AddTask(taskTitle, "Added via chat command", null);
+                    RefreshTaskList();
+                    _activityLogger.Log($"Task added via NLP: '{taskTitle}'");
+                    return $"✅ Task added: '{taskTitle}'\n\n" +
+                           $"You can set a reminder for it in the Tasks tab. " +
+                           $"Would you like to add a reminder?";
+
+                case "view_tasks":
+                    var tasks = _taskManager.GetAllTasks();
+                    _activityLogger.Log("User viewed task list via chat");
+                    if (tasks.Count == 0)
+                        return "You have no tasks yet. Try saying 'add task: enable 2FA' to create one.";
+
+                    string list = string.Join("\n",
+                        System.Linq.Enumerable.Select(tasks,
+                            t => $"• {t.Title} {(t.IsCompleted ? "✅" : "⏳")} — {t.ReminderDisplay}"));
+
+                    return $"Here are your tasks:\n\n{list}";
+
+                case "start_quiz":
+                    _quizManager.StartNewQuiz();
+                    _activityLogger.Log("Quiz started via chat command");
+                    return "🧠 Quiz started! Head over to the Quiz tab to begin.\n\n" +
+                           "12 questions on passwords, phishing, safe browsing, and more!";
+
+                case "activity_log":
+                    _activityLogger.Log("User requested activity log summary");
+                    return _activityLogger.GetSummary();
+
+                default:
+                    return null; // let ChatEngine handle it
+            }
+        }
+
+        // Activity Log
+         
+        /// Rebuilds the Activity Log tab UI from the current logger state.
+        
+        private void RefreshActivityLog()
+        {
+            ActivityLogPanel.Items.Clear();
+
+            var entries = _activityLogger.GetRecentEntries(10);
+
+            if (entries.Count == 0)
+            {
+                ActivityLogPanel.Items.Add(new TextBlock
+                {
+                    Text = "No activity recorded yet.",
+                    Foreground = _labelColour,
+                    FontStyle = FontStyles.Italic,
+                    Margin = new Thickness(4, 10, 0, 0)
+                });
+                return;
+            }
+
+            foreach (var entry in entries)
+            {
+                var card = new Border
+                {
+                    Background = _botBubbleColour,
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(58, 58, 92)),
+                    BorderThickness = new Thickness(1),
+                    CornerRadius = new CornerRadius(4),
+                    Padding = new Thickness(12, 8, 12, 8),
+                    Margin = new Thickness(0, 0, 0, 6)
+                };
+
+                card.Child = new TextBlock
+                {
+                    Text = entry.Display,
+                    Foreground = _userTextColour,
+                    FontSize = 12,
+                    TextWrapping = TextWrapping.Wrap
+                };
+
+                ActivityLogPanel.Items.Add(card);
+            }
+
+            // Total count footer
+            ActivityLogPanel.Items.Add(new TextBlock
+            {
+                Text = $"Showing last {entries.Count} of {_activityLogger.TotalCount} total actions.",
+                Foreground = _labelColour,
+                FontSize = 11,
+                Margin = new Thickness(4, 8, 0, 0)
+            });
         }
 
         //   Chat bubble builders  
