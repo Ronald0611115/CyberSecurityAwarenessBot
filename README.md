@@ -1,11 +1,14 @@
-# CybersecurityAwarenessBot v2.0
+# CybersecurityAwarenessBot v3.0 - Final POE
 ## Project Overview
 
-CybersecurityAwarenessBot v2.0 is a C# WPF desktop chatbot that educates users
-about cybersecurity threats in a conversational, personalised way. Built on the
-console foundation of v1.0, this version introduces a full Graphical User
-Interface, dynamic responses, sentiment detection, memory and recall, and
-delegate-based conversation routing.
+Parts 1, 2, and 3 are fully integrated into one WPF desktop application.
+
+Final POE submission. New features added on top of Parts 1 and 2:
+- Task Assistant with MySQL database integration (add, complete, delete, reminders)
+- Cybersecurity Quiz with 12 shuffled questions, instant feedback, and final score
+- NLP Simulation — natural language commands routed to correct features
+- Activity Log with timestamps — tracks all significant chatbot actions
+- All Parts 1, 2, and 3 features integrated into a single tabbed WPF application
 
 The project demonstrates the use of:
 
@@ -78,28 +81,37 @@ gracefully with helpful fallback messages and no crashes.
 Typing "bye", "exit", or "quit" ends the conversation with a
 personalised farewell message and locks the input field cleanly.
 
+ Part 3 Features
+
+| Feature | Description |
+|---|---|
+| Task Assistant | Add, complete, and delete cybersecurity tasks stored in MySQL |
+| Reminders | Optional reminder dates stored with each task via DatePicker |
+| Quiz | 12 shuffled cybersecurity questions with instant feedback and scoring |
+| NLP Simulation | Natural language commands in Chat tab route to correct features |
+| Activity Log | Timestamped record of all significant chatbot actions |
+| MySQL Database | Full CRUD via XAMPP — tasks persist across sessions
 ---
 
 ## Project Structure
+```
 CybersecurityAwarenessBot/
-│
-├── MainWindow.xaml              → WPF UI layout, styles, and structure
-├── MainWindow.xaml.cs           → UI event handlers, chat bubble builders, voice greeting
-├── ChatEngine.cs                → Conversation orchestration, state machine, delegate routing
-├── ResponseManager.cs           → Dictionary keyword map, random response selection
-├── SentimentDetector.cs         → Delegate-based sentiment detection and empathetic responses
-│
-├── Models/
-│   └── UserMemory.cs            → Auto-properties for user name and favourite topic
-│
-├── greeting.wav                 → WAV voice greeting played on launch
-│
-├── .github/
-│   └── workflows/
-│       └── dotnet.yml           → GitHub Actions CI build workflow
-│
-├── README.md
-└── CybersecurityAwarenessBot.sln
+ ├── MainWindow.xaml / .cs         → Tabbed WPF UI (Chat, Tasks, Quiz, Activity Log)
+ ├── ChatEngine.cs                  → Conversation engine (Parts 1 + 2, unchanged)
+ ├── ResponseManager.cs             → Keyword Dictionary (Part 2, unchanged)
+ ├── SentimentDetector.cs           → Delegate sentiment routing (Part 2, unchanged)
+ ├── Models/
+ │    ├── UserMemory.cs             → User name + topic memory (Part 2)
+ │    ├── TaskItem.cs               → Task data model (Part 3)
+ │    ├── QuizQuestion.cs           → Quiz question model (Part 3)
+ │    └── ActivityLogEntry.cs       → Log entry model (Part 3)
+ └── Services/
+      ├── DatabaseService.cs        → MySQL CRUD operations (Part 3)
+      ├── TaskManager.cs            → Task business logic (Part 3)
+      ├── QuizManager.cs            → Quiz session + question bank (Part 3)
+      ├── ActivityLogger.cs         → Session action logging (Part 3)
+      └── NlpProcessor.cs           → Intent detection via keyword matching (Part 3)
+```
 
 ---
 
@@ -217,6 +229,17 @@ Responsibilities:
 | `who are you` | Bot explains its purpose |
 | `bye` / `exit` / `quit` | Ends the session with a farewell message |
 
+
+## NLP Commands (type these in the Chat tab)
+
+| What you type | What happens |
+|---|---|
+| `remind me to enable 2FA` | Creates a task automatically |
+| `add task: review privacy settings` | Creates a task |
+| `show my tasks` | Lists all your tasks |
+| `start quiz` | Launches the quiz |
+| `show activity log` | Shows recent actions |
+| `what have you done for me` | Shows activity summary |
 ---
 
 ## Technologies Used
@@ -291,6 +314,7 @@ The application handles:
 |---|---|
 | `v1.0` | Console-based chatbot — Part 1 |
 | `v2.0` | WPF GUI chatbot — Part 2, full feature set |
+| `v3.0`  | POE Final Submission (Part 3) |
 
 ---
 
