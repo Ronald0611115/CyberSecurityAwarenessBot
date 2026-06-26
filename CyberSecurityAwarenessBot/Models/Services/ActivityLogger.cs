@@ -53,7 +53,7 @@ namespace CyberSecurityAwarenessBot.Services
                 if (recent.Count == 0)
                     return "No actions recorded yet — start chatting, add a task, or take the quiz!";
 
-                string header = "📋 Here's a summary of recent actions:\n\n";
+                string header = " Here's a summary of recent actions:\n\n";
                 string entries = string.Join("\n",
                     recent.Select((e, i) => $"{i + 1}. {e.Action}"));
 

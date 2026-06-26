@@ -93,12 +93,12 @@
                         <TextBlock FontFamily="Courier New"
                                    FontSize="11"
                                    Foreground="{StaticResource Lavender}"
-                                   Text=" ██████╗██╗   ██╗██████╗ ███████╗██████╗     ██████╗  ██████╗ ████████╗
-                                   &#x0a;██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗    ██╔══██╗██╔═══██╗╚══██╔══╝
-                                   &#x0a;██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝    ██████╔╝██║   ██║   ██║   
-                                   &#x0a;██║       ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗    ██╔══██╗██║   ██║   ██║   
-                                   &#x0a;╚██████╗   ██║   ██████╔╝███████╗██║  ██║    ██████╔╝╚██████╔╝   ██║   
-                                   &#x0a; ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝    ╚═════╝  ╚═════╝    ╚═╝   "/>
+                                   Text="██████╗ ██╗      █████╗ ██╗  ██╗███████╗     ██████╗██╗   ██╗██████╗ ███████╗██████╗     ██████╗  ██████╗ ████████╗
+                                   &#x0a;██╔══██╗██║     ██╔══██╗██║ ██╔╝██╔════╝    ██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗    ██╔══██╗██╔═══██╗╚══██╔══╝
+                                   &#x0a;██████╔╝██║     ███████║█████╔╝ █████╗      ██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝    ██████╔╝██║   ██║   ██║   
+                                   &#x0a;██╔══██╗██║     ██╔══██║██╔═██╗ ██╔══╝      ██║       ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗    ██╔══██╗██║   ██║   ██║   
+                                   &#x0a;██████╔╝███████╗██║  ██║██║  ██╗███████╗    ╚██████╗   ██║   ██████╔╝███████╗██║  ██║    ██████╔╝╚██████╔╝   ██║   
+                                   &#x0a;╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝     ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝    ╚═════╝  ╚═════╝    ╚═╝   "/>
                         <TextBlock Text="Your personal cybersecurity assistant — stay safe online."
                                    Foreground="{StaticResource TextMuted}"
                                    FontSize="12"
@@ -231,20 +231,27 @@
         </TabItem>
 
         <!-- TAB 4: ACTIVITY LOG — built in Step 5/6 -->
-        <TabItem Header="Activity Log">
+        <TabItem Header= "Activity Log">
             <Grid Background="#1E1E2E" Margin="20">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0"
-                           Text="Activity Log"
-                           FontSize="20" FontWeight="Bold"
-                           Foreground="{StaticResource AccentGreen}"
-                           Margin="0,0,0,16"/>
+                   Text="Activity Log"
+                   FontSize="20" FontWeight="Bold"
+                   Foreground="{StaticResource Lavender}"
+                   Margin="0,0,0,8"/>
 
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <TextBlock Grid.Row="1"
+                   Text="A record of actions taken during this session."
+                   Foreground="{StaticResource TextMuted}"
+                   FontSize="12"
+                   Margin="0,0,0,16"/>
+
+                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
                     <ItemsControl x:Name="ActivityLogPanel"/>
                 </ScrollViewer>
             </Grid>
